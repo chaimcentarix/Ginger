@@ -6,8 +6,7 @@ import openai
 import json
 
 METADATA_FILENAME_PATH = "/home/user/Downloads/metadata_epi_v6_189k.jsonl"  # TODO move here: "data/metadata.nd_json"
-metadata = [json.loads(l) for l in open(METADATA_FILENAME_PATH).readlines()]
-gsms_list = [m['_id'] for m in metadata]
+metadata = {json.loads(l).get('_id',0):json.loads(l) for l in open(METADATA_FILENAME_PATH).readlines()}
 load_dotenv()  # Load environment variables from .env file
 
 SLACK_TOKEN = os.environ.get("SLACK_TOKEN")
@@ -32,15 +31,6 @@ def extract_gsm(s):
                 gsm += t
         return gsm
     return None
-
-
-def get_gsm_metadata(gsm):
-    # Extracting the relevant metadata from the file
-    if gsm in gsms_list:
-        result = [m for m in metadata if m.get('_id') == gsm]
-        if len(result) > 0:
-            return str(result[0])
-    return ""
 
 
 message_log = [
@@ -84,6 +74,8 @@ def build_a_response(user_input):
 
     response = get_openAi_message(message_log)
 
+    message_log.append({"role": "assistant", "content": response})
+
     return f"AI assistant: {response}"
 
 
@@ -104,8 +96,8 @@ while True:
                 question = message["text"]
                 gsm = extract_gsm(question)
                 response = ''
-                if gsm in gsms_list:
-                    gsm_metadata = get_gsm_metadata(gsm)
+                gsm_metadata = str(metadata.get(gsm,0))
+                if gsm_metadata !='0':
                     response = build_a_response(
                         f'Please take this data: {gsm_metadata} example and formulate an answer to the following question: {question} and give a description of this example: ' + gsm_metadata)
                 else:
