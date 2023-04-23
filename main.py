@@ -99,8 +99,7 @@ while True:
                 gsm_metadata = str(metadata.get(gsm,0))
                 if gsm_metadata !='0':
                     response = build_a_response(
-                        f'Please take this data: {gsm_metadata} example and formulate an answer to the following question: {question} and give a description of this example: ' + gsm_metadata)
-                else:
+                       f'Please take this data: {gsm_metadata} example and formulate an answer to the following question: {question}')
                     response = build_a_response(question)
                 result = client.chat_postMessage(
                     channel=CHANNEL,
