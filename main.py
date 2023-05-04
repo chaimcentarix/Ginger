@@ -39,7 +39,7 @@ while True:
                 #logging.info(f"Operation at {timestamp}: question='{question}', response='{response}', result='{result}'")
     except Exception as e:
             timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            logging.error(f"Error at {timestamp}: {e}")
+#             logging.error(f"Error at {timestamp}: {e}")
             print(f"Error at {timestamp}: {e}")
 
 
