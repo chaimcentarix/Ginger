@@ -35,7 +35,3 @@ def post_slack(response):
             )
             return result
 
-
-            # timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            # logging.info(f"Operation at {timestamp}: question='{question}', response='{response}'")
-
