@@ -17,15 +17,10 @@ message_log = [
 
 
 def get_openAi_message(message_log):
-    timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    #logging.info(f"Operation at {timestamp}:1 API message_log=''")
-
-
     # Use OpenAI's ChatCompletion API to get the chatbot's response
     response = openai.ChatCompletion.create(
         model="gpt-4",  # The name of the OpenAI chatbot model to use
         messages=message_log,  # The conversation history up to this point, as a list of dictionaries
-        # max_tokens=4097-len(str(message_log).split(' ')),        # The maximum number of tokens (words or subwords) in the generated response
         stop=None,  # The stopping sequence for the generated response, if any (not used here)
         temperature=0,  # The "creativity" of the generated response (higher temperature = more creative)
     )
@@ -33,7 +28,6 @@ def get_openAi_message(message_log):
     # Find the first response from the chatbot that has text in it (some responses may not have text)
     timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
     #logging.info(f"Operation at {timestamp}:----------->after API  response='{ response}'<--------------------")
-    print(response)
     for choice in response.choices:
         if "text" in choice:
             return choice.text
@@ -51,29 +45,14 @@ def make_sumarry():
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": sommary}
         ]
-        timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-        #logging.info(f"Operation at {timestamp}: message_log='{message_log}'")
+
 def build_a_response(user_input):
     # Since GPT does not remember a previous conversation, it is necessary for every contact to send the entire content of the conversation.
     # On the other hand, due to limitations on the length of the message, when the conversation is long, a summary must be created from it and only the summary sent
     # Therefore, it is necessary to update the global message_log variable throughout the run
-    timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    ##logging.info(f"Operation at {timestamp}: user_input='{user_input}'")
     global message_log
     timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    #logging.info(f"Operation at {timestamp}: message_log='{message_log}'")
-
-    # make_sumarry()
     message_log.append({"role": "user", "content": user_input})
-    timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    #logging.info(f"Operation at {timestamp}:  message_log='{message_log}'")
-    # make_sumarry()
     response = get_openAi_message(message_log)
-    timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    #logging.info(f"Operation at {timestamp}: response  ='{response}'")
-
     message_log.append({"role": "assistant", "content": response})
-    timestamp = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    #logging.info(f"Operation at {timestamp}: message_log='{message_log}'")
-
     return f"AI assistant: {response}"
